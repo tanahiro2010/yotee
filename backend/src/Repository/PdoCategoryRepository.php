@@ -99,24 +99,31 @@ final class PdoCategoryRepository implements CategoryRepositoryInterface
         // migration); fall back to a LIKE scan for single-character queries
         // rather than silently returning nothing.
         if (mb_strlen($query) >= 2) {
+            // Real (non-emulated, see ConnectionFactory) prepared statements
+            // can't bind the same named placeholder to two different `?`
+            // occurrences — each repeat needs its own name even though both
+            // get the same value.
             $stmt = $this->pdo->prepare(
-                "SELECT *, MATCH(name, description) AGAINST(:query IN NATURAL LANGUAGE MODE) AS relevance
+                "SELECT *, MATCH(name, description) AGAINST(:query_select IN NATURAL LANGUAGE MODE) AS relevance
                  FROM categories
                  WHERE visibility = 'public' AND deleted_at IS NULL
-                   AND MATCH(name, description) AGAINST(:query IN NATURAL LANGUAGE MODE)
+                   AND MATCH(name, description) AGAINST(:query_where IN NATURAL LANGUAGE MODE)
                  ORDER BY relevance DESC, id ASC
                  LIMIT :limit OFFSET :offset"
             );
-            $stmt->bindValue('query', $query, \PDO::PARAM_STR);
+            $stmt->bindValue('query_select', $query, \PDO::PARAM_STR);
+            $stmt->bindValue('query_where', $query, \PDO::PARAM_STR);
         } else {
+            $likePattern = '%' . str_replace(['%', '_'], ['\\%', '\\_'], $query) . '%';
             $stmt = $this->pdo->prepare(
                 "SELECT * FROM categories
                  WHERE visibility = 'public' AND deleted_at IS NULL
-                   AND (name LIKE :like OR description LIKE :like)
+                   AND (name LIKE :like_name OR description LIKE :like_description)
                  ORDER BY created_at DESC, id ASC
                  LIMIT :limit OFFSET :offset"
             );
-            $stmt->bindValue('like', '%' . str_replace(['%', '_'], ['\\%', '\\_'], $query) . '%', \PDO::PARAM_STR);
+            $stmt->bindValue('like_name', $likePattern, \PDO::PARAM_STR);
+            $stmt->bindValue('like_description', $likePattern, \PDO::PARAM_STR);
         }
 
         // Fetch one extra row so we know whether a next page actually exists
