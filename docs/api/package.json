@@ -1,0 +1,20 @@
+{
+  "name": "yotee-api-spec",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TypeSpec source of truth for the Yotee /api/v1 HTTP API, compiled to OpenAPI 3 and built into static HTML docs.",
+  "type": "module",
+  "scripts": {
+    "build:openapi": "tsp compile . --emit @typespec/openapi3",
+    "build:html": "redocly build-docs openapi/openapi.yaml -o html/index.html --title \"Yotee API\"",
+    "build": "bun run build:openapi && bun run build:html",
+    "watch": "tsp compile . --emit @typespec/openapi3 --watch"
+  },
+  "devDependencies": {
+    "@typespec/compiler": "^1.15.0",
+    "@typespec/http": "^1.15.0",
+    "@typespec/openapi": "^1.15.0",
+    "@typespec/openapi3": "^1.15.0",
+    "@redocly/cli": "^2.49.0"
+  }
+}
