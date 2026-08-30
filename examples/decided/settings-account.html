@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yotee アカウント設定画面</title>
+<style>
+  :root {
+    --bg: #f2f2f7;
+    --page-text: #1c1c1e;
+    --phone-bg: #ffffff;
+    --text: #1c1c1e;
+    --text-secondary: #8e8e93;
+    --accent: #ff6b4a;
+    --accent-soft: #fff1ec;
+    --card-bg: #f7f7f9;
+    --border: rgba(0,0,0,0.07);
+    --danger: #ff3b30;
+    --dot-green: #34c759;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #000000;
+      --page-text: #f5f5f7;
+      --phone-bg: #1c1c1e;
+      --text: #f5f5f7;
+      --text-secondary: #9a9a9e;
+      --accent: #ff8a68;
+      --accent-soft: rgba(255,138,104,0.14);
+      --card-bg: #242426;
+      --border: rgba(255,255,255,0.09);
+      --danger: #ff453a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--page-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 40px 16px 60px;
+  }
+  .caption { text-align: center; max-width: 340px; }
+  .caption h1 { font-size: 16px; margin: 0 0 4px; }
+  .caption p { font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.5; }
+  .phone {
+    width: 375px;
+    max-width: 100%;
+    height: 780px;
+    background: var(--phone-bg);
+    border-radius: 44px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 8px solid #0b0b0d;
+  }
+  .statusbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px 4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .statusicons { display: flex; align-items: center; gap: 6px; color: var(--text); }
+  .navheader {
+    display: flex;
+    align-items: center;
+    padding: 6px 12px 12px;
+    position: relative;
+  }
+  .navheader .back { color: var(--accent); display: flex; align-items: center; }
+  .navheader h2 {
+    position: absolute;
+    left: 0; right: 0;
+    text-align: center;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    pointer-events: none;
+  }
+  .content { flex: 1; overflow-y: auto; padding: 8px 18px 20px; }
+
+  .profile {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--card-bg);
+    border-radius: 16px;
+    margin-bottom: 22px;
+  }
+  .avatar {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .profile .name { font-size: 16px; font-weight: 700; color: var(--text); }
+  .profile .email { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+  .grouplabel {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin: 0 4px 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .card {
+    background: var(--card-bg);
+    border-radius: 14px;
+    margin-bottom: 22px;
+    overflow: hidden;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 14px;
+    border-top: 1px solid var(--border);
+  }
+  .card .row:first-child { border-top: none; }
+  .row .icon-badge {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .row .label { font-size: 14px; font-weight: 600; color: var(--text); }
+  .row .meta { margin-left: auto; display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
+  .badge-connected {
+    display: flex; align-items: center; gap: 4px;
+    color: var(--dot-green);
+    font-weight: 700;
+    font-size: 12px;
+  }
+  .row.danger .label { color: var(--danger); }
+  .row.danger .icon-badge { background: rgba(255,59,48,0.12); color: var(--danger); }
+
+  .version { text-align: center; font-size: 11px; color: var(--text-secondary); margin-top: 10px; }
+</style>
+</head>
+<body>
+  <div class="caption">
+    <h1>アカウント設定画面</h1>
+    <p>設定タブ内の独立ページ(settings/account.tsx想定)。プロフィール、連携アカウント状態(Googleログイン済み・Calendarスコープなし)、通知許可状態、ログアウト/アカウント削除をiOS風グループドリストでまとめる。</p>
+  </div>
+  <div class="phone">
+    <div class="statusbar">
+      <span>9:41</span>
+      <span class="statusicons">
+        <svg viewBox="0 0 20 12" width="17" height="10" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="0.6"/><rect x="5" y="5" width="3" height="7" rx="0.6"/><rect x="10" y="3" width="3" height="9" rx="0.6"/><rect x="15" y="0" width="3" height="12" rx="0.6"/></svg>
+        <svg viewBox="0 0 24 16" width="23" height="13" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1" y="2" width="19" height="10" rx="2.5"/><rect x="21.5" y="5.5" width="1.6" height="3" rx="0.6" fill="currentColor" stroke="none"/><rect x="3" y="4" width="14" height="6" rx="1" fill="currentColor" stroke="none"/></svg>
+      </span>
+    </div>
+    <div class="navheader">
+      <span class="back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><polyline points="15 5 8 12 15 19"/></svg>
+      </span>
+      <h2>アカウント</h2>
+    </div>
+    <div class="content">
+
+      <div class="profile">
+        <div class="avatar">田</div>
+        <div>
+          <div class="name">田中 太郎</div>
+          <div class="email">taro@example.com</div>
+        </div>
+      </div>
+
+      <div class="grouplabel">連携アカウント</div>
+      <div class="card">
+        <div class="row">
+          <div class="icon-badge" style="background:rgba(66,133,244,0.12)">
+            <svg width="15" height="15" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M23.49 12.27c0-.85-.08-1.66-.22-2.45H12v4.63h6.44c-.28 1.48-1.12 2.73-2.38 3.57v2.96h3.86c2.26-2.08 3.57-5.15 3.57-8.71z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.95-2.9l-3.86-2.96c-1.07.72-2.45 1.15-4.09 1.15-3.14 0-5.8-2.12-6.75-4.96H1.27v3.06C3.25 21.35 7.31 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.25 14.33c-.25-.72-.38-1.49-.38-2.33s.14-1.61.38-2.33V6.62H1.27C.46 8.24 0 10.07 0 12s.46 3.76 1.27 5.38l3.98-3.05z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.65 1.27 6.62l3.98 3.05C6.2 6.87 8.86 4.75 12 4.75z"/>
+            </svg>
+          </div>
+          <div class="label">Google</div>
+          <div class="meta">
+            <span class="badge-connected">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><polyline points="4 12 9 17 20 6"/></svg>
+              連携済み
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grouplabel">通知</div>
+      <div class="card">
+        <div class="row">
+          <div class="icon-badge" style="background:var(--accent-soft); color:var(--accent)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M12 3a5 5 0 0 0-5 5v3.5c0 .9-.35 1.77-1 2.4L5 15h14l-1-1.1c-.65-.63-1-1.5-1-2.4V8a5 5 0 0 0-5-5z"/><path d="M9.5 18a2.5 2.5 0 0 0 5 0"/></svg>
+          </div>
+          <div class="label">通知許可</div>
+          <div class="meta">
+            オン
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><polyline points="9 5 16 12 9 19"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="grouplabel">アカウント</div>
+      <div class="card">
+        <div class="row danger">
+          <div class="icon-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><polyline points="15 8 19 12 15 16"/><line x1="19" y1="12" x2="9" y2="12"/></svg>
+          </div>
+          <div class="label">ログアウト</div>
+        </div>
+        <div class="row danger">
+          <div class="icon-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="4 7 20 7"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/><path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/></svg>
+          </div>
+          <div class="label">アカウントを削除</div>
+        </div>
+      </div>
+
+      <div class="version">Yotee v0.1.0</div>
+    </div>
+  </div>
+</body>
+</html>

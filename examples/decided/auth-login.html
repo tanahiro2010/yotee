@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yotee ログイン画面</title>
+<style>
+  :root {
+    --bg: #f2f2f7;
+    --page-text: #1c1c1e;
+    --phone-bg: #ffffff;
+    --text: #1c1c1e;
+    --text-secondary: #8e8e93;
+    --accent: #ff6b4a;
+    --accent-soft: #fff1ec;
+    --border: rgba(0,0,0,0.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #000000;
+      --page-text: #f5f5f7;
+      --phone-bg: #1c1c1e;
+      --text: #f5f5f7;
+      --text-secondary: #9a9a9e;
+      --accent: #ff8a68;
+      --accent-soft: rgba(255,138,104,0.14);
+      --border: rgba(255,255,255,0.12);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--page-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 40px 16px 60px;
+  }
+  .caption { text-align: center; max-width: 340px; }
+  .caption h1 { font-size: 16px; margin: 0 0 4px; }
+  .caption p { font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.5; }
+  .phone {
+    width: 375px;
+    max-width: 100%;
+    height: 780px;
+    background: var(--phone-bg);
+    border-radius: 44px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 8px solid #0b0b0d;
+  }
+  .statusbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px 4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .statusicons { display: flex; align-items: center; gap: 6px; color: var(--text); }
+  .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 32px;
+    text-align: center;
+    gap: 6px;
+  }
+  .logo {
+    width: 76px; height: 76px;
+    border-radius: 22px;
+    background: var(--accent-soft);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+  .appname { font-size: 26px; font-weight: 800; color: var(--text); margin: 0; }
+  .tagline { font-size: 13px; color: var(--text-secondary); margin: 6px 0 40px; line-height: 1.6; }
+  .buttons { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    height: 50px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-google {
+    background: var(--phone-bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-apple {
+    background: #000;
+    color: #fff;
+  }
+  @media (prefers-color-scheme: dark) {
+    .btn-apple { background: #fff; color: #000; }
+  }
+  .legal { font-size: 11px; color: var(--text-secondary); margin-top: 22px; line-height: 1.6; }
+  .legal a { color: var(--text-secondary); text-decoration: underline; }
+</style>
+</head>
+<body>
+  <div class="caption">
+    <h1>ログイン画面</h1>
+    <p>MVPはApple/GoogleのソーシャルログインのみでOK(§53)。メール+パスワードは持たない。GoogleはOAuthのログイン手段としてのみ使用し、Calendarスコープは要求しない(Calendar連携は§64の将来機能のまま据え置き)。</p>
+  </div>
+  <div class="phone">
+    <div class="statusbar">
+      <span>9:41</span>
+      <span class="statusicons">
+        <svg viewBox="0 0 20 12" width="17" height="10" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="0.6"/><rect x="5" y="5" width="3" height="7" rx="0.6"/><rect x="10" y="3" width="3" height="9" rx="0.6"/><rect x="15" y="0" width="3" height="12" rx="0.6"/></svg>
+        <svg viewBox="0 0 24 16" width="23" height="13" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1" y="2" width="19" height="10" rx="2.5"/><rect x="21.5" y="5.5" width="1.6" height="3" rx="0.6" fill="currentColor" stroke="none"/><rect x="3" y="4" width="14" height="6" rx="1" fill="currentColor" stroke="none"/></svg>
+      </span>
+    </div>
+    <div class="content">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="34" height="34"><path d="M12 3a5 5 0 0 0-5 5v3.5c0 .9-.35 1.77-1 2.4L5 15h14l-1-1.1c-.65-.63-1-1.5-1-2.4V8a5 5 0 0 0-5-5z"/><path d="M9.5 18a2.5 2.5 0 0 0 5 0"/></svg>
+      </div>
+      <p class="appname">Yotee</p>
+      <p class="tagline">未来の予定を購読するだけ。<br>覚えておくのはアプリに任せよう。</p>
+      <div class="buttons">
+        <div class="btn btn-google">
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M23.49 12.27c0-.85-.08-1.66-.22-2.45H12v4.63h6.44c-.28 1.48-1.12 2.73-2.38 3.57v2.96h3.86c2.26-2.08 3.57-5.15 3.57-8.71z"/>
+            <path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.95-2.9l-3.86-2.96c-1.07.72-2.45 1.15-4.09 1.15-3.14 0-5.8-2.12-6.75-4.96H1.27v3.06C3.25 21.35 7.31 24 12 24z"/>
+            <path fill="#FBBC05" d="M5.25 14.33c-.25-.72-.38-1.49-.38-2.33s.14-1.61.38-2.33V6.62H1.27C.46 8.24 0 10.07 0 12s.46 3.76 1.27 5.38l3.98-3.05z"/>
+            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.65 1.27 6.62l3.98 3.05C6.2 6.87 8.86 4.75 12 4.75z"/>
+          </svg>
+          Googleで続ける
+        </div>
+        <div class="btn btn-apple">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16.365 1.43c0 1.14-.493 2.27-1.177 3.08-.744.87-1.99 1.54-2.987 1.54-.12-1.11.464-2.25 1.158-2.98.744-.849 2.079-1.53 3.006-1.64zm4.564 16.5c-.593 1.32-.88 1.9-1.653 3.05-1.077 1.59-2.596 3.58-4.474 3.6-1.665.02-2.096-1.11-4.353-1.09-2.258.02-2.73 1.11-4.4 1.09-1.877-.02-3.318-1.79-4.395-3.38C-1.415 17.61-1.29 12.6 1.44 10c1.42-1.4 3.22-2.15 5.02-2.15 1.44 0 2.8.88 3.68.88.87 0 2.53-1.08 4.28-.92.73.03 2.77.29 4.08 2.2-.11.07-2.44 1.42-2.42 4.25.02 3.39 2.98 4.53 3.01 4.55z"/></svg>
+          Appleで続ける
+        </div>
+      </div>
+      <p class="legal">続けることで<a href="#">利用規約</a>と<a href="#">プライバシーポリシー</a>に同意したものとみなされます。</p>
+    </div>
+  </div>
+</body>
+</html>
