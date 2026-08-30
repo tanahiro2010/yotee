@@ -1,0 +1,6 @@
+# Defense in depth for shared hosting: if this whole backend/ directory ever
+# ends up reachable under the account's web root (e.g. it was uploaded one
+# level higher than intended), this blocks every request to it outright.
+# The real front door is backend/public/ — see its own .htaccess — which
+# must be the directory actually configured as the domain's document root.
+Require all denied
