@@ -12,26 +12,28 @@ PRD（[予定購読・通知アプリ 詳細PRD.md](予定購読・通知アプ�
 
 **目的：** サーバーなしで「リスト作成→予定追加→通知予約」が端末単体で完結することを証明する。PRD §22/§65/§77 の核心（通知実行はバックエンドが担わない）を最初から体現する土台。
 
-- [ ] Expo + TypeScript + Expo Router でプロジェクト初期化（`src/app/` 構成、§32）
-- [ ] `expo-sqlite` セットアップ、ローカルスキーマ作成（`categories` / `items`、§48 準拠だがサーバースキーマと一致させる必要はない）
-- [ ] Schedule Engine を Pure TypeScript で実装（UI非依存、単体テスト可能に。§74最重要領域）
-  - [ ] `Once` ルールの Occurrence 生成
-  - [ ] `Weekly`（曜日配列）の Occurrence 生成
-  - [ ] `Monthly Day`（毎月N日、月末処理含む）
-  - [ ] `Monthly Nth Weekday`（第N曜日）
-  - [ ] `Yearly`（うるう年含む）
-  - [ ] タイムゾーン（IANA）+ DST 考慮した現地時刻計算（§9）
-  - [ ] 上記全パターンの unit test（weekday境界、月末、うるう年、第N曜日、DST）
-- [ ] Notification Scheduler 実装（§23-25）
-  - [ ] Occurrence → リマインダー日時への変換（前日の夜/当日の朝/カスタム）
-  - [ ] Notification Horizon 実装（60日先まで計算、OS登録上限48件、§24）
-  - [ ] 決定論的 Local Notification ID 生成（`itemId + occurrenceAt + reminderRule`、§25）
-  - [ ] `expo-notifications` で Local Notification 登録/キャンセル
-- [ ] 3タブナビゲーション（ホーム / 探す / マイリスト、§14）— この段階では「探す」はダミーでよい
-- [ ] リスト作成 UI（§15）／予定作成 UI（§16）— cron等を出さないシンプルなフォーム
-- [ ] ホーム画面：近い予定の時系列表示（§13）
-- [ ] 通知 Permission UX（初回起動時に要求しない、リスト作成/登録時に説明→OS要求、§54）。拒否時もアプリ利用可能にする（§55）
-- [ ] Cold Start → 初期表示 2秒以内の実測（§65 Performance）
+- [x] Expo + TypeScript + Expo Router でプロジェクト初期化（`mobile/src/app/` 構成、§32）— SDK 57, bun
+- [x] `expo-sqlite` セットアップ、ローカルスキーマ作成（`categories` / `items` / `scheduled_notifications`、§48 準拠だがサーバースキーマと一致させる必要はない）
+- [x] Schedule Engine を Pure TypeScript で実装（UI非依存、単体テスト可能に。§74最重要領域）— `mobile/src/domain/scheduleEngine/`
+  - [x] `Once` ルールの Occurrence 生成
+  - [x] `Weekly`（曜日配列）の Occurrence 生成
+  - [x] `Monthly Day`（毎月N日、月末処理含む＝クランプする方針で確定）
+  - [x] `Monthly Nth Weekday`（第N曜日、存在しない月はスキップ）
+  - [x] `Yearly`（うるう年含む＝Feb29はFeb28にクランプ）
+  - [x] タイムゾーン（IANA）+ DST 考慮した現地時刻計算（§9）— `Intl.DateTimeFormat`ベース、外部ライブラリなし
+  - [x] 上記全パターンの unit test（weekday境界、月末、うるう年、第N曜日、DST）— 46 tests, 全green（`bun run test` / `bunx jest`）
+- [x] Notification Scheduler 実装（§23-25）— `mobile/src/domain/notificationScheduler/`（純粋ロジック）+ `mobile/src/services/notificationOrchestrator.ts`（expo-notifications統合）
+  - [x] Occurrence → リマインダー日時への変換（前日の夜/当日の朝/カスタム）
+  - [x] Notification Horizon 実装（60日先まで計算、OS登録上限48件、全Item横断でグローバルに上限適用、§24）
+  - [x] 決定論的 Local Notification ID 生成（`itemId + occurrenceAt + reminderRule`、§25）
+  - [x] `expo-notifications` で Local Notification 登録/キャンセル（cancel-then-reschedule方式、リネーム時の内容陳腐化を回避）
+- [x] 3タブナビゲーション（ホーム / 探す / マイリスト、§14）— 探すはダミー実装のまま（想定通り）
+- [x] リスト作成 UI（§15、`lists/new.tsx`）／予定作成 UI（§16、`items/new.tsx`）— cron等を出さないシンプルなフォーム。可視性は非公開固定（Phase1にバックエンドがないため）
+- [x] ホーム画面：近い予定の時系列表示（§13、案D＝タイムライン＋直近ハイライト、`(tabs)/index.tsx`）
+- [x] 通知 Permission UX（初回起動時に要求しない、リスト作成時に説明→OS要求、§54）。拒否時もアプリ利用可能にする（§55、リスト詳細画面に「通知がオフになっています」の受動的ヒントのみ表示）
+- [ ] Cold Start → 初期表示 2秒以内の実測（§65 Performance）— 実機での計測は未実施
+- [ ] リスト編集画面（`lists/[categoryId]/edit.tsx`）、予定詳細/編集画面（`items/[itemId].tsx`）、設定画面（`settings/index.tsx`）— 未着手
+- [ ] iOS/Android 実機での動作確認（`expo export --platform ios` によるバンドル成功のみ確認済み、実機/シミュレータでの起動・Local Notification発火は未検証）
 
 **Exit Criteria（§73 Acceptance Criteria の一部）:**
 - ユーザーが5分以内に「ゴミの日（燃えるゴミ：毎週火金、プラスチック：毎週水）」を作成できる
