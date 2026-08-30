@@ -8,7 +8,8 @@
     "scheme": "mobile",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.mobile"
     },
     "android": {
       "adaptiveIcon": {
@@ -36,7 +37,8 @@
       ],
       "expo-sqlite",
       "expo-secure-store",
-      "expo-background-task"
+      "expo-background-task",
+      "@react-native-community/datetimepicker"
     ],
     "experiments": {
       "typedRoutes": true
