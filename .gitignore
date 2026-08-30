@@ -1,0 +1,40 @@
+# --- Node / React Native / Expo ---
+node_modules/
+.expo/
+.expo-shared/
+dist/
+web-build/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS / iOS / Android native build artifacts (if prebuild is ever run)
+ios/
+android/
+
+# --- PHP / Composer / Slim backend ---
+backend/vendor/
+backend/.env
+backend/.env.*
+!backend/.env.example
+composer.phar
+
+# --- Env / secrets ---
+.env
+.env.local
+.env.*.local
+
+# --- Editor / OS ---
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# --- Logs ---
+*.log
