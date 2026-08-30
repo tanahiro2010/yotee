@@ -18,6 +18,11 @@ yarn-error.*
 ios/
 android/
 
+# --- docs/api (TypeSpec -> OpenAPI3 -> HTML build output) ---
+docs/api/openapi/
+docs/api/html/
+docs/api/tsp-output/
+
 # --- PHP / Composer / Slim backend ---
 backend/vendor/
 backend/.env
