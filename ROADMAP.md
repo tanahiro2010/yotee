@@ -4,6 +4,8 @@ PRD（[予定購読・通知アプリ 詳細PRD.md](予定購読・通知アプ�
 
 進捗に応じてチェックボックスを更新していく想定のドキュメント。
 
+**GitHub Issue運用ルール：** 次フェーズのIssueは前もってまとめて起票しない。現フェーズが完了した時点で、次フェーズの項目をIssue化する（`phase-N`ラベル + `Phase N`マイルストーンを付与）。現時点でIssue化済みなのは `Phase 1`（[milestone](https://github.com/tanahiro2010/yotee/milestone/1)）のみ。
+
 ---
 
 ## Phase 1 — ローカルプロトタイプ（バックエンドなし）

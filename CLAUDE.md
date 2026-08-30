@@ -6,7 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This repository currently contains only the product/design spec — [予定購読・通知アプリ 詳細PRD.md](予定購読・通知アプリ 詳細PRD.md) (in Japanese). No code, build tooling, or dependency manifests exist yet. There are no build/lint/test commands to run because no project has been scaffolded. When starting implementation, follow the "Frontend/Backend structure" and "Implementation phases" sections below, and update this file with real commands (`npm run ...`, `composer ...`, etc.) once `package.json` / `composer.json` exist.
 
-Per the PRD's phased plan (§75), build in this order: Phase 1 local-only mobile prototype (no backend) → Phase 2 backend + sync → Phase 3 public/discover/subscribe → Phase 4 update push/reschedule → Phase 5 production hardening.
+Per the PRD's phased plan (§75), build in this order: Phase 1 local-only mobile prototype (no backend) → Phase 2 backend + sync → Phase 3 public/discover/subscribe → Phase 4 update push/reschedule → Phase 5 production hardening. See [ROADMAP.md](ROADMAP.md) for the task-level breakdown of each phase.
+
+## GitHub workflow
+
+Issues for the *next* phase are filed only once the *current* phase is complete — do not batch-file issues for future phases in advance. Each phase has a GitHub milestone (`Phase 1`–`Phase 5`) and a matching label (`phase-1`–`phase-5`); file new tasks against the milestone/label of the phase currently in progress.
 
 ## Product summary
 
