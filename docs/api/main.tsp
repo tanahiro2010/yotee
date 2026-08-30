@@ -40,5 +40,5 @@ using TypeSpec.OpenAPI;
  */
 @service(#{ title: "Yotee API" })
 @info(#{ version: "0.1.0" })
-@server("https://api.yotee.app/api/v1", "Production")
+@server("https://api.yotee.net/api/v1", "Production")
 namespace Yotee;

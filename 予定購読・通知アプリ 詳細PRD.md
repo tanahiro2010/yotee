@@ -1490,7 +1490,7 @@ MVPのログイン方式は、
 例：
 
 ```text
-https://example.com/l/{categoryId}
+https://yotee.net/l/{categoryId}
 ```
 
 アプリインストール済み：
