@@ -30,6 +30,8 @@ backend/.env.*
 !backend/.env.example
 backend/.phpunit.result.cache
 backend/var/
+backend/secret.env
+!backend/secret.env.example
 composer.phar
 
 # --- Env / secrets ---
