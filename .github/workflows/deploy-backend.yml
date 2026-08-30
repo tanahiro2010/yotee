@@ -1,0 +1,100 @@
+name: Deploy backend
+
+# Only push-to-main and manual dispatch — deliberately no `pull_request`
+# trigger, since that would run this workflow (and expose these secrets)
+# against untrusted fork branches.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy-backend.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-backend
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo, pdo_mysql, apcu
+          tools: composer:v2
+
+      - name: Install dependencies
+        working-directory: backend
+        run: composer install --prefer-dist --no-interaction
+
+      - name: Run unit tests
+        working-directory: backend
+        run: vendor/bin/phpunit
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+        run: |
+          mkdir -p "$HOME/.ssh"
+          umask 077
+          printf '%s\n' "$SSH_PRIVATE_KEY" > "$HOME/.ssh/deploy_key"
+          chmod 600 "$HOME/.ssh/deploy_key"
+          ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" >> "$HOME/.ssh/known_hosts" 2>/dev/null
+
+      - name: Sync application source
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          rsync -az --delete \
+            -e "ssh -i $HOME/.ssh/deploy_key -p $SSH_PORT -o StrictHostKeyChecking=yes" \
+            --exclude='.env' \
+            --exclude='.env.*' \
+            --exclude='secret.env' \
+            --exclude='secret.env.example' \
+            --exclude='vendor/' \
+            --exclude='var/' \
+            --exclude='tests/' \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            backend/ "$SSH_USER@$SSH_HOST:$DEPLOY_PATH/"
+
+      - name: Write production .env on the server
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          PROD_DOTENV: ${{ secrets.PROD_DOTENV }}
+        run: |
+          ssh -i "$HOME/.ssh/deploy_key" -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" \
+            "umask 077 && cat > '$DEPLOY_PATH/.env'" <<< "$PROD_DOTENV"
+
+      - name: Install dependencies and run migrations on the server
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          COMPOSER_BIN: ${{ secrets.COMPOSER_BIN }}
+        run: |
+          ssh -i "$HOME/.ssh/deploy_key" -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" \
+            "cd '$DEPLOY_PATH' && ${COMPOSER_BIN:-composer} install --no-dev --optimize-autoloader --no-interaction && vendor/bin/phinx migrate -c config/phinx.php"
+
+      - name: Remove local deploy key
+        if: always()
+        run: rm -f "$HOME/.ssh/deploy_key"
