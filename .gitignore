@@ -29,6 +29,7 @@ backend/.env
 backend/.env.*
 !backend/.env.example
 backend/.phpunit.result.cache
+backend/var/
 composer.phar
 
 # --- Env / secrets ---
