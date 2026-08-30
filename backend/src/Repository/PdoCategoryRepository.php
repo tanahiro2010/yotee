@@ -51,7 +51,24 @@ final class PdoCategoryRepository implements CategoryRepositoryInterface
                 deleted_at = :deleted_at
              WHERE id = :id'
         );
-        $stmt->execute($this->toParams($category));
+        // Deliberately a narrower param set than create()'s — owner_id and
+        // created_at never change after insert. Passing toParams()'s extra
+        // keys here would throw under real (non-emulated) prepared
+        // statements: MySQL's native protocol rejects a bound value with no
+        // matching placeholder in the query ("Invalid parameter number").
+        $stmt->execute([
+            'id' => $category->id,
+            'name' => $category->name,
+            'description' => $category->description,
+            'visibility' => $category->visibility->value,
+            'timezone' => $category->timezone,
+            'version' => $category->version,
+            'recommended_reminder' => $category->recommendedReminder !== null
+                ? json_encode($category->recommendedReminder, JSON_THROW_ON_ERROR)
+                : null,
+            'updated_at' => DateTimeCodec::toDb($category->updatedAt),
+            'deleted_at' => $category->deletedAt !== null ? DateTimeCodec::toDb($category->deletedAt) : null,
+        ]);
 
         return $category;
     }
