@@ -52,7 +52,22 @@ final class PdoItemRepository implements ItemRepositoryInterface
                 deleted_at = :deleted_at
              WHERE id = :id'
         );
-        $stmt->execute($this->toParams($item));
+        // Deliberately narrower than create()'s param set — category_id and
+        // created_at never change after insert, and a real (non-emulated)
+        // prepared statement throws on a bound value with no matching
+        // placeholder (see the same fix in PdoCategoryRepository::save()).
+        $stmt->execute([
+            'id' => $item->id,
+            'name' => $item->name,
+            'description' => $item->description,
+            'schedule_type' => $item->scheduleType->value,
+            'schedule_rule' => json_encode($item->scheduleRule, JSON_THROW_ON_ERROR),
+            'location' => $item->location,
+            'url' => $item->url,
+            'sort_order' => $item->sortOrder,
+            'updated_at' => DateTimeCodec::toDb($item->updatedAt),
+            'deleted_at' => $item->deletedAt !== null ? DateTimeCodec::toDb($item->deletedAt) : null,
+        ]);
 
         return $item;
     }
