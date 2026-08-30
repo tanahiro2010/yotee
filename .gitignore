@@ -43,6 +43,9 @@ composer.phar
 .DS_Store
 .idea/
 .vscode/
+# mobile/'s Expo template ships shared (non-personal) extension recommendations
+# and workspace settings that are meant to be committed.
+!mobile/.vscode/
 *.swp
 
 # --- Logs ---
