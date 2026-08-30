@@ -1,0 +1,46 @@
+name: 機能タスク
+description: ROADMAP.md に基づく実装タスクを起票する
+title: "[Task] "
+labels: ["task"]
+body:
+  - type: dropdown
+    id: phase
+    attributes:
+      label: フェーズ
+      description: ROADMAP.md のどのフェーズに属するか
+      options:
+        - "Phase 1 - ローカルプロトタイプ"
+        - "Phase 2 - バックエンド構築"
+        - "Phase 3 - 公開・発見・購読機能"
+        - "Phase 4 - 更新同期"
+        - "Phase 5 - 本番準備"
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: やること
+      description: このタスクのスコープ
+    validations:
+      required: true
+  - type: textarea
+    id: checklist
+    attributes:
+      label: チェックリスト
+      placeholder: |
+        - [ ]
+        - [ ]
+    validations:
+      required: false
+  - type: textarea
+    id: prd
+    attributes:
+      label: 関連PRD節番号
+      placeholder: "例: §24, §25"
+    validations:
+      required: false
+  - type: textarea
+    id: notes
+    attributes:
+      label: 補足・設計上の注意点
+      description: 「サーバーは通知実行しない」等、守るべきアーキテクチャ制約があれば明記
