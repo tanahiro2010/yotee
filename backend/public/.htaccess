@@ -1,0 +1,11 @@
+# Shared Apache hosting (e.g. Xserver) has no equivalent of nginx's
+# `try_files` config exposed to the account owner, so the front-controller
+# rewrite has to live here instead: every request that isn't a real file
+# funnels through index.php, which is what lets Slim's router see it.
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [QSA,L]
+
+# This directory should only ever serve index.php's output — never a
+# directory listing of whatever else ends up next to it.
+Options -Indexes
